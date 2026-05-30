@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>與老師的第一次約會問答小遊戲</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;background:linear-gradient(135deg,#ffe4e6,#fff7ed);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:18px;color:#1f2937}
+.card{width:100%;max-width:520px;background:rgba(255,255,255,.96);border-radius:28px;padding:28px 22px;box-shadow:0 12px 30px rgba(225,29,72,.18);text-align:center}
+h1{font-size:27px;color:#e11d48;margin:8px 0 26px;line-height:1.35}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+button{border:0;border-radius:18px;padding:15px 26px;font-size:20px;font-weight:800;cursor:pointer}
+.draw{background:#e11d48;color:white;box-shadow:0 8px 18px rgba(225,29,72,.26)}
+.reset{background:#fff1f2;color:#e11d48}
+button:active{transform:scale(.97)}
+#number{font-size:76px;line-height:1;margin:34px 0 18px;color:#e11d48;font-weight:900}
+#question{min-height:120px;font-size:25px;line-height:1.55;display:flex;justify-content:center;align-items:center;padding:8px}
+#remain{margin-top:16px;color:#4b5563;font-size:17px}
+.tip{margin-top:18px;display:inline-block;background:#fff1f2;padding:12px 16px;border-radius:14px;font-size:15px;color:#4b5563;line-height:1.5}
+.fade{animation:pop .28s ease}
+@keyframes pop{0%{transform:scale(.94);opacity:.35}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>💕 與老師的第一次約會問答小遊戲</h1>
+<div class="btns">
+<button class="draw" onclick="drawQuestion()">🎲 抽一題</button>
+<button class="reset" onclick="resetGame()">重新開始</button>
+</div>
+<div id="number">?</div>
+<div id="question">準備好了就開始吧！</div>
+<div id="remain">剩餘題數：60</div>
+<div class="tip">💡 小規則：可以跳過，但跳過的人要換問對方一題 😉</div>
+</div>
+
+<script>
+const questions=[
+"如果明天突然放假一天，你最想做什麼？",
+"你最近有什麼事情讓自己心情很好嗎？",
+"朋友通常都怎麼形容你？",
+"你覺得自己最奇怪的小習慣是什麼？",
+"如果現在可以立刻出國，你第一個想去哪？",
+"小時候的夢想是什麼？",
+"你有沒有什麼超級不擅長的事情？",
+"如果中樂透100萬，你第一件事會做什麼？",
+"最近有沒有看過很喜歡的電影或影集？",
+"平常休假最常怎麼度過？",
+"你是計畫型還是隨興型的人？",
+"你比較喜歡熱鬧還是安靜的地方？",
+"如果只能吃一種食物一輩子，你選什麼？",
+"你最喜歡別人怎麼稱讚你？",
+"你最近最常聽的一首歌是什麼？",
+"你覺得自己比較像貓還是狗？為什麼？",
+"如果朋友幫你取綽號，你覺得會叫什麼？",
+"你最喜歡的飲料是什麼？",
+"你有沒有什麼別人不知道的小才藝？",
+"你最想學會哪一種技能？",
+"遇到壓力通常怎麼紓壓？",
+"你覺得自己最大的優點是什麼？",
+"最受不了別人什麼行為？",
+"有沒有做過什麼很瘋狂的事？",
+"如果可以回到18歲，你最想改變什麼？",
+"你是容易相信別人的人嗎？",
+"你覺得感情裡最重要的是什麼？",
+"你會比較喜歡驚喜還是提前知道？",
+"你比較在意生活穩定，還是人生有新鮮感？",
+"你生氣的時候通常會想講清楚，還是先冷靜？",
+"你覺得兩個人在一起需要每天聊天嗎？",
+"你比較重視陪伴、儀式感，還是實際行動？",
+"你覺得金錢觀在感情裡重要嗎？",
+"你喜歡一個人時，會變主動還是變害羞？",
+"你覺得朋友和另一半，哪個優先？",
+"如果另一半工作很忙，你可以接受嗎？",
+"你覺得道歉比較重要，還是改變比較重要？",
+"你最欣賞一個人身上的什麼特質？",
+"你覺得安全感是對方給的，還是自己建立的？",
+"你希望未來的生活比較簡單，還是充滿挑戰？",
+"你心目中的理想約會是什麼樣子？",
+"你比較喜歡主動的人，還是慢慢熟的人？",
+"如果另一半突然安排旅行，你會開心還是緊張？",
+"你會相信一見鍾情嗎？",
+"你覺得自己談戀愛後跟平常差很多嗎？",
+"你喜歡被照顧，還是照顧別人？",
+"第一次約會你最加分的行為是什麼？",
+"第一次約會你最扣分的行為是什麼？",
+"你覺得曖昧期最甜的是什麼時候？",
+"你喜歡對方直接表達好感嗎？",
+"如果喜歡一個人，你會暗示還是直接說？",
+"你覺得牽手是自然發生，還是要先確認？",
+"你喜歡約會被安排好，還是一起討論？",
+"你覺得什麼樣的相處會讓你心動？",
+"你喜歡另一半黏一點，還是保有空間？",
+"你覺得聊天頻率多少最舒服？",
+"如果今天約會很開心，你會怎麼暗示對方？",
+"你覺得兩個人多久見一次面最剛好？",
+"你最容易被哪一種貼心舉動打動？",
+"如果今天只能問我一個問題，你會想問什麼？"
+];
+
+let remainingQuestions=[...questions];
+
+function drawQuestion(){
+  const number=document.getElementById("number");
+  const question=document.getElementById("question");
+
+  if(remainingQuestions.length===0){
+    number.innerText="🎉";
+    question.innerText="恭喜！60題全部完成，代表你們真的聊很多了！";
+    document.getElementById("remain").innerText="按重新開始可以再玩一次";
+    return;
+  }
+
+  const randomIndex=Math.floor(Math.random()*remainingQuestions.length);
+  const selected=remainingQuestions[randomIndex];
+  const originalNumber=questions.indexOf(selected)+1;
+
+  number.innerText=originalNumber;
+  question.innerText=selected;
+
+  number.classList.remove("fade");
+  question.classList.remove("fade");
+  void number.offsetWidth;
+  number.classList.add("fade");
+  question.classList.add("fade");
+
+  remainingQuestions.splice(randomIndex,1);
+  document.getElementById("remain").innerText="剩餘題數："+remainingQuestions.length;
+}
+
+function resetGame(){
+  remainingQuestions=[...questions];
+  document.getElementById("number").innerText="?";
+  document.getElementById("question").innerText="準備好了就開始吧！";
+  document.getElementById("remain").innerText="剩餘題數：60";
+}
+</script>
+</body>
+</html>
